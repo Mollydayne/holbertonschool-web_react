@@ -1,29 +1,78 @@
-// Déclaration du type littéral
-type Subjects = 'Math' | 'History';
-
-// Fonction qui retourne la phrase associée à la matière
-function teachClass(todayClass: Subjects): string {
-  return `Teaching ${todayClass}`;
+// Interface pour les directeurs
+export interface DirectorInterface {
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workDirectorTasks(): string;
 }
 
-// ---------- Tests console ----------
-console.log(teachClass('Math'));     // Teaching Math
-console.log(teachClass('History'));  // Teaching History
+// Interface pour les enseignants
+export interface TeacherInterface {
+  workFromHome(): string;
+  getCoffeeBreak(): string;
+  workTeacherTasks(): string;
+}
 
-// ---------- Affichage HTML ----------
-const container = document.createElement('div');
-container.style.fontFamily = 'Arial';
-container.style.marginTop = '20px';
+// Classe Director qui implémente l'interface DirectorInterface
+export class Director implements DirectorInterface {
+  workFromHome(): string {
+    return "Working from home";
+  }
 
-const header = document.createElement('h3');
-header.textContent = 'Class Schedule';
-container.appendChild(header);
+  getCoffeeBreak(): string {
+    return "Getting a coffee break";
+  }
 
-['Math', 'History'].forEach((subject) => {
-  const p = document.createElement('p');
-  p.textContent = teachClass(subject as Subjects);
-  p.style.fontSize = '16px';
-  container.appendChild(p);
-});
+  workDirectorTasks(): string {
+    return "Getting to director tasks";
+  }
+}
 
-document.body.appendChild(container);
+// Classe Teacher qui implémente l'interface TeacherInterface
+export class Teacher implements TeacherInterface {
+  workFromHome(): string {
+    return "Cannot work from home";
+  }
+
+  getCoffeeBreak(): string {
+    return "Cannot have a break";
+  }
+
+  workTeacherTasks(): string {
+    return "Getting to work";
+  }
+}
+
+// Fonction createEmployee : retourne un objet Teacher ou Director selon le salaire
+export function createEmployee(salary: number | string): Director | Teacher {
+  if (typeof salary === 'number' && salary < 500) {
+    return new Teacher();
+  } else {
+    return new Director();
+  }
+}
+
+// Prédicat de type : vérifie si l'employé est un directeur
+export function isDirector(employee: Director | Teacher): employee is Director {
+  return employee instanceof Director;
+}
+
+// Fonction executeWork : appelle la méthode spécifique en fonction du type d'employé
+export function executeWork(employee: Director | Teacher): string {
+  if (isDirector(employee)) {
+    return employee.workDirectorTasks();
+  } else {
+    return employee.workTeacherTasks();
+  }
+}
+
+// Type littéral Subjects : uniquement "Math" ou "History"
+export type Subjects = "Math" | "History";
+
+// Fonction teachClass : retourne une phrase selon la matière enseignée
+export function teachClass(todayClass: Subjects): string {
+  if (todayClass === "Math") {
+    return "Teaching Math";
+  } else {
+    return "Teaching History";
+  }
+}

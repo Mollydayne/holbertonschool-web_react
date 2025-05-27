@@ -1,15 +1,40 @@
-// Interface décrivant le constructeur (type de la classe)
-interface StudentConstructor {
-  new (firstName: string, lastName: string): StudentClassInterface;
+// Interface de base pour un enseignant
+interface Teacher {
+  readonly firstName: string;
+  readonly lastName: string;
+  fullTimeEmployee: boolean;
+  location: string;
+  yearsOfExperience?: number;
+  [key: string]: any;
 }
 
-// Interface décrivant le comportement de l'objet Student
-interface StudentClassInterface {
+// Interface Directors qui hérite de Teacher et ajoute une propriété obligatoire
+interface Directors extends Teacher {
+  numberOfReports: number;
+}
+
+// Interface pour la fonction printTeacher
+interface PrintTeacherFunction {
+  (firstName: string, lastName: string): string;
+}
+
+// Fonction printTeacher : retourne la première lettre du prénom + nom complet
+const printTeacher: PrintTeacherFunction = (firstName, lastName) => {
+  return `${firstName.charAt(0)}. ${lastName}`;
+};
+
+// Interface décrivant le comportement attendu d’un étudiant
+export interface StudentClassInterface {
   workOnHomework(): string;
   displayName(): string;
 }
 
-// Classe implémentant l'interface StudentClassInterface
+// Interface décrivant le constructeur de la classe StudentClass
+export interface StudentClassConstructor {
+  new (firstName: string, lastName: string): StudentClassInterface;
+}
+
+// Classe représentant un étudiant
 class StudentClass implements StudentClassInterface {
   private firstName: string;
   private lastName: string;
@@ -27,26 +52,3 @@ class StudentClass implements StudentClassInterface {
     return this.firstName;
   }
 }
-
-// Création d'une instance
-const student = new StudentClass("Clarisse", "Perez");
-
-console.log(student.displayName()); // Clarisse
-console.log(student.workOnHomework()); // Currently working
-
-// ---------- Affichage HTML ----------
-const container = document.createElement('div');
-container.style.fontFamily = 'Arial';
-container.style.marginTop = '20px';
-
-const nameParagraph = document.createElement('p');
-nameParagraph.textContent = `Student: ${student.displayName()}`;
-nameParagraph.style.fontSize = '18px';
-
-const homework = document.createElement('p');
-homework.textContent = `Status: ${student.workOnHomework()}`;
-homework.style.fontSize = '18px';
-
-container.appendChild(nameParagraph);
-container.appendChild(homework);
-document.body.appendChild(container);
